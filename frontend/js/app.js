@@ -17,6 +17,7 @@ function initializeDashboard() {
     setupTimeSelector();
     setupNavigation();
     updateLastUpdatedTime();
+    checkBackendHealth();
 }
 
 
@@ -41,7 +42,7 @@ function refreshDashboard(button) {
     const originalText = button.innerHTML;
 
     button.disabled = true;
-    button.innerHTML = "↻ Refreshing...";
+    button.innerHTML = "â†» Refreshing...";
 
     setTimeout(() => {
         updateResourceValues();
@@ -227,4 +228,34 @@ function setupNavigation() {
             );
         });
     });
+}
+
+/* =========================================
+   Backend API Health Check
+   ========================================= */
+
+async function checkBackendHealth() {
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:8000/health"
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Backend returned HTTP ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        console.log(
+            "Backend health:",
+            data.status
+        );
+    } catch (error) {
+        console.error(
+            "Backend health check failed:",
+            error
+        );
+    }
 }
