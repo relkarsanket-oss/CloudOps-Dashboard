@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CloudOps Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">C</div>
+
+                <div>
+                    <h1>CloudOps</h1>
+                    <span>Infrastructure</span>
+                </div>
+            </div>
+
+            <nav class="navigation">
+
+                <p class="nav-title">MAIN</p>
+
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">▦</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">▣</span>
+                    <span>EC2 Instances</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">◈</span>
+                    <span>S3 Storage</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">◉</span>
+                    <span>RDS Databases</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">λ</span>
+                    <span>Lambda</span>
+                </a>
+
+                <p class="nav-title">MONITORING</p>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">⌁</span>
+                    <span>CloudWatch</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">!</span>
+                    <span>Alerts</span>
+                    <span class="alert-count">3</span>
+                </a>
+
+                <p class="nav-title">SYSTEM</p>
+
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="region-label">
+                    AWS Region
+                </div>
+
+                <div class="region-value">
+                    <span class="status-dot"></span>
+                    ap-south-1
+                </div>
+            </div>
+
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Header -->
+            <header class="topbar">
+
+                <div class="page-heading">
+                    <span class="breadcrumb">CloudOps /</span>
+                    <h2>Dashboard</h2>
+                </div>
+
+                <div class="topbar-actions">
+
+                    <button class="icon-button" aria-label="Notifications">
+                        🔔
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <div class="user-profile">
+                        <div class="avatar">AD</div>
+
+                        <div class="user-info">
+                            <strong>Admin</strong>
+                            <span>Cloud Administrator</span>
+                        </div>
+
+                        <span class="dropdown-arrow">⌄</span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- Dashboard Content -->
+            <section class="dashboard-content">
+
+                <div class="welcome-section">
+
+                    <div>
+                        <h2>Infrastructure Overview</h2>
+
+                        <p>
+                            Monitor and manage your AWS infrastructure
+                            from one centralized dashboard.
+                        </p>
+                    </div>
+
+                    <button class="refresh-button" id="refreshButton">
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+
+                <!-- Resource Cards -->
+                <div class="resource-grid">
+
+                    <article class="resource-card">
+
+                        <div class="card-top">
+                            <div class="resource-icon ec2-icon">
+                                EC2
+                            </div>
+
+                            <span class="health-badge healthy">
+                                Healthy
+                            </span>
+                        </div>
+
+                        <div class="resource-value">12</div>
+
+                        <div class="resource-name">
+                            EC2 Instances
+                        </div>
+
+                        <div class="resource-meta">
+                            <span>10 Running</span>
+                            <span>2 Stopped</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="resource-card">
+
+                        <div class="card-top">
+                            <div class="resource-icon s3-icon">
+                                S3
+                            </div>
+
+                            <span class="health-badge healthy">
+                                Healthy
+                            </span>
+                        </div>
+
+                        <div class="resource-value">24</div>
+
+                        <div class="resource-name">
+                            S3 Buckets
+                        </div>
+
+                        <div class="resource-meta">
+                            <span>24 Active</span>
+                            <span>0 Errors</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="resource-card">
+
+                        <div class="card-top">
+                            <div class="resource-icon rds-icon">
+                                RDS
+                            </div>
+
+                            <span class="health-badge healthy">
+                                Healthy
+                            </span>
+                        </div>
+
+                        <div class="resource-value">6</div>
+
+                        <div class="resource-name">
+                            RDS Databases
+                        </div>
+
+                        <div class="resource-meta">
+                            <span>6 Available</span>
+                            <span>0 Issues</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="resource-card">
+
+                        <div class="card-top">
+                            <div class="resource-icon lambda-icon">
+                                λ
+                            </div>
+
+                            <span class="health-badge warning">
+                                Monitor
+                            </span>
+                        </div>
+
+                        <div class="resource-value">18</div>
+
+                        <div class="resource-name">
+                            Lambda Functions
+                        </div>
+
+                        <div class="resource-meta">
+                            <span>18 Active</span>
+                            <span>2 Warnings</span>
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- Monitoring Section -->
+                <div class="content-grid">
+
+                    <section class="panel performance-panel">
+
+                        <div class="panel-header">
+
+                            <div>
+                                <h3>Resource Performance</h3>
+
+                                <p>
+                                    CPU utilization across monitored resources
+                                </p>
+                            </div>
+
+                            <select id="timeRange">
+                                <option>Last 24 hours</option>
+                                <option>Last 7 days</option>
+                                <option>Last 30 days</option>
+                            </select>
+
+                        </div>
+
+                        <div class="chart-container">
+
+                            <div class="chart-placeholder">
+
+                                <div class="chart-grid-lines"></div>
+
+                                <div class="chart-line">
+                                    <span></span>
+                                </div>
+
+                                <div class="chart-labels">
+                                    <span>00:00</span>
+                                    <span>04:00</span>
+                                    <span>08:00</span>
+                                    <span>12:00</span>
+                                    <span>16:00</span>
+                                    <span>20:00</span>
+                                    <span>24:00</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="chart-legend">
+
+                            <span>
+                                <i class="legend-dot ec2-dot"></i>
+                                EC2
+                            </span>
+
+                            <span>
+                                <i class="legend-dot rds-dot"></i>
+                                RDS
+                            </span>
+
+                            <span>
+                                <i class="legend-dot lambda-dot"></i>
+                                Lambda
+                            </span>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- System Status -->
+                    <section class="panel status-panel">
+
+                        <div class="panel-header">
+
+                            <div>
+                                <h3>System Status</h3>
+
+                                <p>
+                                    Current infrastructure health
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="status-list">
+
+                            <div class="status-row">
+
+                                <div class="status-service">
+                                    <span class="service-icon">EC2</span>
+
+                                    <div>
+                                        <strong>EC2</strong>
+                                        <span>12 instances</span>
+                                    </div>
+                                </div>
+
+                                <span class="service-status operational">
+                                    Operational
+                                </span>
+
+                            </div>
+
+
+                            <div class="status-row">
+
+                                <div class="status-service">
+                                    <span class="service-icon">S3</span>
+
+                                    <div>
+                                        <strong>S3</strong>
+                                        <span>24 buckets</span>
+                                    </div>
+                                </div>
+
+                                <span class="service-status operational">
+                                    Operational
+                                </span>
+
+                            </div>
+
+
+                            <div class="status-row">
+
+                                <div class="status-service">
+                                    <span class="service-icon">RDS</span>
+
+                                    <div>
+                                        <strong>RDS</strong>
+                                        <span>6 databases</span>
+                                    </div>
+                                </div>
+
+                                <span class="service-status operational">
+                                    Operational
+                                </span>
+
+                            </div>
+
+
+                            <div class="status-row">
+
+                                <div class="status-service">
+                                    <span class="service-icon">λ</span>
+
+                                    <div>
+                                        <strong>Lambda</strong>
+                                        <span>18 functions</span>
+                                    </div>
+                                </div>
+
+                                <span class="service-status warning-status">
+                                    Warning
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <!-- Alerts -->
+                <section class="panel alerts-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Recent Alerts</h3>
+
+                            <p>
+                                Latest infrastructure events requiring attention
+                            </p>
+                        </div>
+
+                        <a href="#" class="view-all">
+                            View all →
+                        </a>
+
+                    </div>
+
+
+                    <div class="alerts-list">
+
+                        <div class="alert-row">
+
+                            <div class="alert-indicator critical"></div>
+
+                            <div class="alert-content">
+
+                                <strong>
+                                    High CPU utilization detected
+                                </strong>
+
+                                <span>
+                                    EC2 instance i-0abc1234 · CPU reached 91%
+                                </span>
+
+                            </div>
+
+                            <span class="alert-time">
+                                8 min ago
+                            </span>
+
+                        </div>
+
+
+                        <div class="alert-row">
+
+                            <div class="alert-indicator warning-indicator"></div>
+
+                            <div class="alert-content">
+
+                                <strong>
+                                    Lambda execution duration increased
+                                </strong>
+
+                                <span>
+                                    payment-processing · 3.8 seconds average
+                                </span>
+
+                            </div>
+
+                            <span class="alert-time">
+                                24 min ago
+                            </span>
+
+                        </div>
+
+
+                        <div class="alert-row">
+
+                            <div class="alert-indicator info-indicator"></div>
+
+                            <div class="alert-content">
+
+                                <strong>
+                                    S3 lifecycle policy updated
+                                </strong>
+
+                                <span>
+                                    Production-data bucket configuration changed
+                                </span>
+
+                            </div>
+
+                            <span class="alert-time">
+                                1 hr ago
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
