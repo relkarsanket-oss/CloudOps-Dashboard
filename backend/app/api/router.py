@@ -1,5 +1,8 @@
 from fastapi import APIRouter
 
+from backend.aws.services import get_sts_client
+
+
 router = APIRouter()
 
 
@@ -17,6 +20,19 @@ def api_status():
         "service": "CloudOps Dashboard API",
         "version": "v1",
         "status": "operational",
+    }
+
+
+@api_v1_router.get("/aws/status")
+def aws_status():
+    sts_client = get_sts_client()
+    identity = sts_client.get_caller_identity()
+
+    return {
+        "service": "AWS",
+        "status": "connected",
+        "account_id": identity["Account"],
+        "arn": identity["Arn"],
     }
 
 
