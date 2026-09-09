@@ -11,6 +11,10 @@ def get_ec2_client():
     return boto3.client("ec2", region_name=AWS_REGION)
 
 
+def get_s3_client():
+    return boto3.client("s3", region_name=AWS_REGION)
+
+
 def get_ec2_instances():
     ec2 = get_ec2_client()
 
@@ -34,3 +38,21 @@ def get_ec2_instances():
             )
 
     return instances
+
+
+def get_s3_buckets():
+    s3 = get_s3_client()
+
+    response = s3.list_buckets()
+
+    buckets = []
+
+    for bucket in response.get("Buckets", []):
+        buckets.append(
+            {
+                "name": bucket.get("Name"),
+                "creation_date": bucket.get("CreationDate"),
+            }
+        )
+
+    return buckets
