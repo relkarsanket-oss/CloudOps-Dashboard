@@ -14,6 +14,8 @@ def get_ec2_client():
 def get_s3_client():
     return boto3.client("s3", region_name=AWS_REGION)
 
+def get_rds_client():
+    return boto3.client("rds", region_name=AWS_REGION)
 
 def get_ec2_instances():
     ec2 = get_ec2_client()
@@ -56,3 +58,26 @@ def get_s3_buckets():
         )
 
     return buckets
+
+def get_rds_instances():
+    rds = get_rds_client()
+
+    response = rds.describe_db_instances()
+
+    instances = []
+
+    for db_instance in response.get("DBInstances", []):
+        instances.append(
+            {
+                "identifier": db_instance.get("DBInstanceIdentifier"),
+                "engine": db_instance.get("Engine"),
+                "engine_version": db_instance.get("EngineVersion"),
+                "status": db_instance.get("DBInstanceStatus"),
+                "instance_class": db_instance.get("DBInstanceClass"),
+                "availability_zone": db_instance.get("AvailabilityZone"),
+                "endpoint": db_instance.get("Endpoint", {}).get("Address"),
+                "port": db_instance.get("Endpoint", {}).get("Port"),
+            }
+        )
+
+    return instances
