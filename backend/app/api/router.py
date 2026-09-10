@@ -7,7 +7,7 @@ from backend.app.services.monitoring_service import get_monitoring_data
 router = APIRouter()
 
 
-@router.get("/health")
+@router.get("/health", tags=["Health"])
 def health_check():
     return {"status": "healthy"}
 
@@ -15,7 +15,7 @@ def health_check():
 api_v1_router = APIRouter(prefix="/api/v1")
 
 
-@api_v1_router.get("/status")
+@api_v1_router.get("/status", tags=["API"])
 def api_status():
     return {
         "service": "CloudOps Dashboard API",
@@ -24,7 +24,7 @@ def api_status():
     }
 
 
-@api_v1_router.get("/aws/status")
+@api_v1_router.get("/aws/status", tags=["AWS"])
 def aws_status():
     sts_client = get_sts_client()
     identity = sts_client.get_caller_identity()
@@ -40,6 +40,7 @@ def aws_status():
 @api_v1_router.get(
     "/monitoring",
     response_model=MonitoringData | MonitoringError,
+    tags=["Monitoring"],
 )
 def monitoring():
     try:
