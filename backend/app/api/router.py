@@ -38,7 +38,13 @@ def aws_status():
 
 @api_v1_router.get("/monitoring")
 def monitoring():
-    return get_monitoring_data()
+    try:
+        return get_monitoring_data()
+    except Exception:
+        return {
+            "status": "error",
+            "message": "Unable to retrieve monitoring data",
+        }
 
 
 router.include_router(api_v1_router)
