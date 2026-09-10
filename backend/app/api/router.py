@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from backend.aws.services import get_sts_client
-
+from backend.app.services.monitoring_service import get_monitoring_data
 
 router = APIRouter()
 
@@ -34,6 +34,11 @@ def aws_status():
         "account_id": identity["Account"],
         "arn": identity["Arn"],
     }
+
+
+@api_v1_router.get("/monitoring")
+def monitoring():
+    return get_monitoring_data()
 
 
 router.include_router(api_v1_router)
