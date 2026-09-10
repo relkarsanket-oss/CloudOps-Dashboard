@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from backend.app.models.monitoring import MonitoringData, MonitoringError
 from backend.aws.services import get_sts_client
 from backend.app.services.monitoring_service import get_monitoring_data
 
@@ -36,7 +37,10 @@ def aws_status():
     }
 
 
-@api_v1_router.get("/monitoring")
+@api_v1_router.get(
+    "/monitoring",
+    response_model=MonitoringData | MonitoringError,
+)
 def monitoring():
     try:
         return get_monitoring_data()
