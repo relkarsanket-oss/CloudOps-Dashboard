@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from backend.app.models.monitoring import MonitoringData, MonitoringError
 from backend.aws.services import get_sts_client
 from backend.app.services.monitoring_service import get_monitoring_data
+from backend.app.services.resource_service import ResourceService
 
 router = APIRouter()
 
@@ -50,6 +51,15 @@ def monitoring():
             "status": "error",
             "message": "Unable to retrieve monitoring data",
         }
+
+
+@api_v1_router.get("/resources/ec2", tags=["Resources"])
+def ec2_resources():
+    service = ResourceService()
+
+    return {
+        "resources": service.get_ec2_instances()
+    }
 
 
 router.include_router(api_v1_router)
