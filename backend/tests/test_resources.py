@@ -82,3 +82,22 @@ def test_s3_resources_error(mock_resource_service):
     }
 
     mock_service.get_s3_buckets.assert_called_once()
+
+@patch("backend.app.api.router.ResourceService")
+def test_rds_resources_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.get_rds_instances.side_effect = RuntimeError(
+        "Unable to retrieve RDS resources"
+    )
+
+    response = client.get("/api/v1/resources/rds")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to retrieve RDS resources",
+    }
+
+    mock_service.get_rds_instances.assert_called_once()
+
