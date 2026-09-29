@@ -101,3 +101,21 @@ def test_rds_resources_error(mock_resource_service):
 
     mock_service.get_rds_instances.assert_called_once()
 
+@patch("backend.app.api.router.ResourceService")
+def test_ec2_resources_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.get_ec2_instances.side_effect = RuntimeError(
+        "Unable to retrieve EC2 resources"
+    )
+
+    response = client.get("/api/v1/resources/ec2")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to retrieve EC2 resources",
+    }
+
+    mock_service.get_ec2_instances.assert_called_once()
+
