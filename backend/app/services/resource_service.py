@@ -30,3 +30,22 @@ class ResourceService:
                 )
 
         return instances
+
+    def get_rds_instances(self):
+        """Retrieve RDS instances from the configured AWS region."""
+        response = self.rds.describe_db_instances()
+
+        instances = []
+
+        for instance in response.get("DBInstances", []):
+            instances.append(
+                {
+                    "db_instance_identifier": instance.get("DBInstanceIdentifier"),
+                    "engine": instance.get("Engine"),
+                    "status": instance.get("DBInstanceStatus"),
+                    "instance_class": instance.get("DBInstanceClass"),
+                    "endpoint": instance.get("Endpoint", {}).get("Address"),
+                }
+            )
+
+        return instances
