@@ -62,4 +62,13 @@ def ec2_resources():
     }
 
 
+@api_v1_router.get("/resources/rds", tags=["Resources"])
+def rds_resources():
+    service = ResourceService()
+
+    return {
+        "resources": service.get_rds_instances()
+    }
+
+
 router.include_router(api_v1_router)
