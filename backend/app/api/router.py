@@ -5,6 +5,7 @@ from backend.aws.services import get_sts_client
 from backend.app.services.monitoring_service import get_monitoring_data
 from backend.app.services.resource_service import ResourceService
 
+
 router = APIRouter()
 
 
@@ -71,10 +72,14 @@ def rds_resources():
     }
 
 
-router.include_router(api_v1_router)
-
-@router.get("/resources/s3", tags=["Resources"])
+@api_v1_router.get("/resources/s3", tags=["Resources"])
 def get_s3_resources():
     """Retrieve S3 buckets available to the AWS account."""
     service = ResourceService()
-    return service.get_s3_buckets()
+
+    return {
+        "resources": service.get_s3_buckets()
+    }
+
+
+router.include_router(api_v1_router)
