@@ -72,3 +72,9 @@ def rds_resources():
 
 
 router.include_router(api_v1_router)
+
+@router.get("/resources/s3", tags=["Resources"])
+def get_s3_resources():
+    """Retrieve S3 buckets available to the AWS account."""
+    service = ResourceService()
+    return service.get_s3_buckets()
