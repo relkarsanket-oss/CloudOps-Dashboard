@@ -64,3 +64,21 @@ def test_s3_resources(mock_resource_service):
     }
 
     mock_service.get_s3_buckets.assert_called_once()
+
+@patch("backend.app.api.router.ResourceService")
+def test_s3_resources_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.get_s3_buckets.side_effect = RuntimeError(
+        "Unable to retrieve S3 resources"
+    )
+
+    response = client.get("/api/v1/resources/s3")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to retrieve S3 resources",
+    }
+
+    mock_service.get_s3_buckets.assert_called_once()

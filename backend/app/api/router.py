@@ -58,18 +58,30 @@ def monitoring():
 def ec2_resources():
     service = ResourceService()
 
-    return {
-        "resources": service.get_ec2_instances()
-    }
+    try:
+        return {
+            "resources": service.get_ec2_instances()
+        }
+    except RuntimeError:
+        return {
+            "status": "error",
+            "message": "Unable to retrieve EC2 resources",
+        }
 
 
 @api_v1_router.get("/resources/rds", tags=["Resources"])
 def rds_resources():
     service = ResourceService()
 
-    return {
-        "resources": service.get_rds_instances()
-    }
+    try:
+        return {
+            "resources": service.get_rds_instances()
+        }
+    except RuntimeError:
+        return {
+            "status": "error",
+            "message": "Unable to retrieve RDS resources",
+        }
 
 
 @api_v1_router.get("/resources/s3", tags=["Resources"])
@@ -77,9 +89,15 @@ def get_s3_resources():
     """Retrieve S3 buckets available to the AWS account."""
     service = ResourceService()
 
-    return {
-        "resources": service.get_s3_buckets()
-    }
+    try:
+        return {
+            "resources": service.get_s3_buckets()
+        }
+    except RuntimeError:
+        return {
+            "status": "error",
+            "message": "Unable to retrieve S3 resources",
+        }
 
 
 router.include_router(api_v1_router)
