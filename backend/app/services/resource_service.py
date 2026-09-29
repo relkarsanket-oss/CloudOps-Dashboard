@@ -49,3 +49,20 @@ class ResourceService:
             )
 
         return instances
+
+    def get_s3_buckets(self):
+        """Retrieve S3 buckets available to the AWS account."""
+        response = self.s3.list_buckets()
+
+        buckets = []
+
+        for bucket in response.get("Buckets", []):
+            buckets.append(
+                {
+                    "name": bucket.get("Name"),
+                    "creation_date": bucket.get("CreationDate"),
+                }
+            )
+
+        return buckets
+    
