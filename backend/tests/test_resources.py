@@ -1,8 +1,9 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from fastapi.testclient import TestClient
 
 from backend.app.main import app
+from backend.app.services.resource_service import ResourceService
 
 
 client = TestClient(app)
@@ -153,3 +154,78 @@ def test_ec2_resources_error(mock_resource_service):
     }
 
     mock_service.get_ec2_instances.assert_called_once()
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_start_ec2_instance(mock_boto_client):
+    mock_ec2 = MagicMock()
+
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+
+    service = ResourceService()
+
+    result = service.start_ec2_instance("i-1234567890abcdef0")
+
+    mock_ec2.start_instances.assert_called_once_with(
+        InstanceIds=["i-1234567890abcdef0"]
+    )
+
+    assert result == {
+        "instance_id": "i-1234567890abcdef0",
+        "action": "start",
+        "status": "initiated",
+    }
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_stop_ec2_instance(mock_boto_client):
+    mock_ec2 = MagicMock()
+
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+
+    service = ResourceService()
+
+    result = service.stop_ec2_instance("i-1234567890abcdef0")
+
+    mock_ec2.stop_instances.assert_called_once_with(
+        InstanceIds=["i-1234567890abcdef0"]
+    )
+
+    assert result == {
+        "instance_id": "i-1234567890abcdef0",
+        "action": "stop",
+        "status": "initiated",
+    }
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_reboot_ec2_instance(mock_boto_client):
+    mock_ec2 = MagicMock()
+
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+
+    service = ResourceService()
+
+    result = service.reboot_ec2_instance("i-1234567890abcdef0")
+
+    mock_ec2.reboot_instances.assert_called_once_with(
+        InstanceIds=["i-1234567890abcdef0"]
+    )
+
+    assert result == {
+        "instance_id": "i-1234567890abcdef0",
+        "action": "reboot",
+        "status": "initiated",
+    }

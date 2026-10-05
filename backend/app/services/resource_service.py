@@ -38,6 +38,55 @@ class ResourceService:
                 "Unable to retrieve EC2 resources"
             ) from exc
 
+    def start_ec2_instance(self, instance_id):
+        """Start an EC2 instance."""
+        try:
+            self.ec2.start_instances(InstanceIds=[instance_id])
+
+            return {
+                "instance_id": instance_id,
+                "action": "start",
+                "status": "initiated",
+            }
+
+        except ClientError as exc:
+            raise RuntimeError(
+                "Unable to start EC2 instance"
+            ) from exc
+
+    def stop_ec2_instance(self, instance_id):
+        """Stop an EC2 instance."""
+        try:
+            self.ec2.stop_instances(InstanceIds=[instance_id])
+
+            return {
+                "instance_id": instance_id,
+                "action": "stop",
+                "status": "initiated",
+            }
+
+        except ClientError as exc:
+            raise RuntimeError(
+                "Unable to stop EC2 instance"
+            ) from exc
+
+    def reboot_ec2_instance(self, instance_id):
+        """Reboot an EC2 instance."""
+        try:
+            self.ec2.reboot_instances(InstanceIds=[instance_id])
+
+            return {
+                "instance_id": instance_id,
+                "action": "reboot",
+                "status": "initiated",
+            }
+
+        except ClientError as exc:
+            raise RuntimeError(
+                "Unable to reboot EC2 instance"
+            ) from exc
+
+
     def get_rds_instances(self):
         """Retrieve RDS instances from the configured AWS region."""
         try:
