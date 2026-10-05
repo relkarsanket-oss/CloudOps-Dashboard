@@ -59,6 +59,8 @@ def monitoring():
     "/resources/ec2",
     response_model=ResourceResponse | ResourceError,
     tags=["Resources"],
+    summary="List EC2 instances",
+    description="Retrieve EC2 instances from the configured AWS region.",
 )
 def ec2_resources():
     service = ResourceService()
@@ -78,6 +80,8 @@ def ec2_resources():
     "/resources/rds",
     response_model=ResourceResponse | ResourceError,
     tags=["Resources"],
+    summary="List RDS instances",
+    description="Retrieve RDS database instances from the configured AWS region.",
 )
 def rds_resources():
     service = ResourceService()
@@ -97,6 +101,8 @@ def rds_resources():
     "/resources/s3",
     response_model=ResourceResponse | ResourceError,
     tags=["Resources"],
+    summary="List S3 buckets",
+    description="Retrieve S3 buckets available to the AWS account.",
 )
 def get_s3_resources():
     """Retrieve S3 buckets available to the AWS account."""
