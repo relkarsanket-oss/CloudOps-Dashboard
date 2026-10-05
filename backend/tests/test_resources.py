@@ -41,6 +41,38 @@ def test_ec2_resources(mock_resource_service):
 
 
 @patch("backend.app.api.router.ResourceService")
+def test_rds_resources(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.get_rds_instances.return_value = [
+        {
+            "db_instance_identifier": "cloudops-db",
+            "engine": "postgres",
+            "status": "available",
+            "instance_class": "db.t3.micro",
+            "endpoint": None,
+        }
+    ]
+
+    response = client.get("/api/v1/resources/rds")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "resources": [
+            {
+                "db_instance_identifier": "cloudops-db",
+                "engine": "postgres",
+                "status": "available",
+                "instance_class": "db.t3.micro",
+                "endpoint": None,
+            }
+        ]
+    }
+
+    mock_service.get_rds_instances.assert_called_once()
+
+
+@patch("backend.app.api.router.ResourceService")
 def test_s3_resources(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
@@ -65,6 +97,7 @@ def test_s3_resources(mock_resource_service):
 
     mock_service.get_s3_buckets.assert_called_once()
 
+
 @patch("backend.app.api.router.ResourceService")
 def test_s3_resources_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
@@ -82,6 +115,7 @@ def test_s3_resources_error(mock_resource_service):
     }
 
     mock_service.get_s3_buckets.assert_called_once()
+
 
 @patch("backend.app.api.router.ResourceService")
 def test_rds_resources_error(mock_resource_service):
@@ -101,6 +135,7 @@ def test_rds_resources_error(mock_resource_service):
 
     mock_service.get_rds_instances.assert_called_once()
 
+
 @patch("backend.app.api.router.ResourceService")
 def test_ec2_resources_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
@@ -118,4 +153,3 @@ def test_ec2_resources_error(mock_resource_service):
     }
 
     mock_service.get_ec2_instances.assert_called_once()
-
