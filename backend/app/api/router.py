@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from backend.app.models.monitoring import MonitoringData, MonitoringError
+from backend.app.models.resources import ResourceError, ResourceResponse
 from backend.aws.services import get_sts_client
 from backend.app.services.monitoring_service import get_monitoring_data
 from backend.app.services.resource_service import ResourceService
@@ -54,7 +55,11 @@ def monitoring():
         }
 
 
-@api_v1_router.get("/resources/ec2", tags=["Resources"])
+@api_v1_router.get(
+    "/resources/ec2",
+    response_model=ResourceResponse | ResourceError,
+    tags=["Resources"],
+)
 def ec2_resources():
     service = ResourceService()
 
@@ -69,7 +74,11 @@ def ec2_resources():
         }
 
 
-@api_v1_router.get("/resources/rds", tags=["Resources"])
+@api_v1_router.get(
+    "/resources/rds",
+    response_model=ResourceResponse | ResourceError,
+    tags=["Resources"],
+)
 def rds_resources():
     service = ResourceService()
 
@@ -84,7 +93,11 @@ def rds_resources():
         }
 
 
-@api_v1_router.get("/resources/s3", tags=["Resources"])
+@api_v1_router.get(
+    "/resources/s3",
+    response_model=ResourceResponse | ResourceError,
+    tags=["Resources"],
+)
 def get_s3_resources():
     """Retrieve S3 buckets available to the AWS account."""
     service = ResourceService()
