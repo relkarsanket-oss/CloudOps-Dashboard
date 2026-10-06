@@ -119,4 +119,43 @@ def get_s3_resources():
         }
 
 
+@api_v1_router.post("/resources/ec2/{instance_id}/start")
+def start_ec2_instance(instance_id: str):
+    service = ResourceService()
+
+    try:
+        return service.start_ec2_instance(instance_id)
+    except RuntimeError as exc:
+        return {
+            "status": "error",
+            "message": str(exc),
+        }
+
+
+@api_v1_router.post("/resources/ec2/{instance_id}/stop")
+def stop_ec2_instance(instance_id: str):
+    service = ResourceService()
+
+    try:
+        return service.stop_ec2_instance(instance_id)
+    except RuntimeError as exc:
+        return {
+            "status": "error",
+            "message": str(exc),
+        }
+
+
+@api_v1_router.post("/resources/ec2/{instance_id}/reboot")
+def reboot_ec2_instance(instance_id: str):
+    service = ResourceService()
+
+    try:
+        return service.reboot_ec2_instance(instance_id)
+    except RuntimeError as exc:
+        return {
+            "status": "error",
+            "message": str(exc),
+        }
+
+
 router.include_router(api_v1_router)
