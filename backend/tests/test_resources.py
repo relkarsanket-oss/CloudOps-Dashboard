@@ -307,3 +307,71 @@ def test_reboot_ec2_instance_api(mock_resource_service):
     mock_service.reboot_ec2_instance.assert_called_once_with(
         "i-1234567890abcdef0"
     )
+
+@patch("backend.app.api.router.ResourceService")
+def test_start_ec2_instance_api_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.start_ec2_instance.side_effect = RuntimeError(
+        "Unable to start EC2 instance"
+    )
+
+    response = client.post(
+        "/api/v1/resources/ec2/i-1234567890abcdef0/start"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to start EC2 instance",
+    }
+
+    mock_service.start_ec2_instance.assert_called_once_with(
+        "i-1234567890abcdef0"
+    )
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_stop_ec2_instance_api_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.stop_ec2_instance.side_effect = RuntimeError(
+        "Unable to stop EC2 instance"
+    )
+
+    response = client.post(
+        "/api/v1/resources/ec2/i-1234567890abcdef0/stop"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to stop EC2 instance",
+    }
+
+    mock_service.stop_ec2_instance.assert_called_once_with(
+        "i-1234567890abcdef0"
+    )
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_reboot_ec2_instance_api_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.reboot_ec2_instance.side_effect = RuntimeError(
+        "Unable to reboot EC2 instance"
+    )
+
+    response = client.post(
+        "/api/v1/resources/ec2/i-1234567890abcdef0/reboot"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to reboot EC2 instance",
+    }
+
+    mock_service.reboot_ec2_instance.assert_called_once_with(
+        "i-1234567890abcdef0"
+    )
