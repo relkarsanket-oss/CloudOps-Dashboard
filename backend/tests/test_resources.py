@@ -597,3 +597,93 @@ def test_reboot_rds_instance_api_error(mock_resource_service):
     mock_service.reboot_rds_instance.assert_called_once_with(
         "cloudops-db"
     )
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_start_rds_instance_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_rds = MagicMock()
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+
+    mock_rds.start_db_instance.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidDBInstanceState",
+                "Message": "DB instance cannot be started",
+            }
+        },
+        "StartDBInstance",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.start_rds_instance("cloudops-db")
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to start RDS instance"
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_stop_rds_instance_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_rds = MagicMock()
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+
+    mock_rds.stop_db_instance.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidDBInstanceState",
+                "Message": "DB instance cannot be stopped",
+            }
+        },
+        "StopDBInstance",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.stop_rds_instance("cloudops-db")
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to stop RDS instance"
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_reboot_rds_instance_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_rds = MagicMock()
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+
+    mock_rds.reboot_db_instance.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidDBInstanceState",
+                "Message": "DB instance cannot be rebooted",
+            }
+        },
+        "RebootDBInstance",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.reboot_rds_instance("cloudops-db")
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to reboot RDS instance"
