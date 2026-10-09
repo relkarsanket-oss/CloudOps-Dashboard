@@ -158,4 +158,43 @@ def reboot_ec2_instance(instance_id: str):
         }
 
 
+@api_v1_router.post("/resources/rds/{db_instance_identifier}/start")
+def start_rds_instance(db_instance_identifier: str):
+    service = ResourceService()
+
+    try:
+        return service.start_rds_instance(db_instance_identifier)
+    except RuntimeError as exc:
+        return {
+            "status": "error",
+            "message": str(exc),
+        }
+
+
+@api_v1_router.post("/resources/rds/{db_instance_identifier}/stop")
+def stop_rds_instance(db_instance_identifier: str):
+    service = ResourceService()
+
+    try:
+        return service.stop_rds_instance(db_instance_identifier)
+    except RuntimeError as exc:
+        return {
+            "status": "error",
+            "message": str(exc),
+        }
+
+
+@api_v1_router.post("/resources/rds/{db_instance_identifier}/reboot")
+def reboot_rds_instance(db_instance_identifier: str):
+    service = ResourceService()
+
+    try:
+        return service.reboot_rds_instance(db_instance_identifier)
+    except RuntimeError as exc:
+        return {
+            "status": "error",
+            "message": str(exc),
+        }
+
+
 router.include_router(api_v1_router)

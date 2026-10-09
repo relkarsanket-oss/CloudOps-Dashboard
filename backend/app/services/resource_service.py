@@ -114,6 +114,60 @@ class ResourceService:
                 "Unable to retrieve RDS resources"
             ) from exc
 
+    def start_rds_instance(self, db_instance_identifier):
+        """Start an RDS database instance."""
+        try:
+            self.rds.start_db_instance(
+                DBInstanceIdentifier=db_instance_identifier
+            )
+
+            return {
+                "db_instance_identifier": db_instance_identifier,
+                "action": "start",
+                "status": "initiated",
+            }
+
+        except ClientError as exc:
+            raise RuntimeError(
+                "Unable to start RDS instance"
+            ) from exc
+
+    def stop_rds_instance(self, db_instance_identifier):
+        """Stop an RDS database instance."""
+        try:
+            self.rds.stop_db_instance(
+                DBInstanceIdentifier=db_instance_identifier
+            )
+
+            return {
+                "db_instance_identifier": db_instance_identifier,
+                "action": "stop",
+                "status": "initiated",
+            }
+
+        except ClientError as exc:
+            raise RuntimeError(
+                "Unable to stop RDS instance"
+            ) from exc
+
+    def reboot_rds_instance(self, db_instance_identifier):
+        """Reboot an RDS database instance."""
+        try:
+            self.rds.reboot_db_instance(
+                DBInstanceIdentifier=db_instance_identifier
+            )
+
+            return {
+                "db_instance_identifier": db_instance_identifier,
+                "action": "reboot",
+                "status": "initiated",
+            }
+
+        except ClientError as exc:
+            raise RuntimeError(
+                "Unable to reboot RDS instance"
+            ) from exc
+
     def get_s3_buckets(self):
         """Retrieve S3 buckets available to the AWS account."""
         try:

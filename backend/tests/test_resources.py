@@ -231,6 +231,81 @@ def test_reboot_ec2_instance(mock_boto_client):
     }
 
 
+@patch("backend.app.services.resource_service.boto3.client")
+def test_start_rds_instance(mock_boto_client):
+    mock_rds = MagicMock()
+
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+
+    service = ResourceService()
+
+    result = service.start_rds_instance("cloudops-db")
+
+    mock_rds.start_db_instance.assert_called_once_with(
+        DBInstanceIdentifier="cloudops-db"
+    )
+
+    assert result == {
+        "db_instance_identifier": "cloudops-db",
+        "action": "start",
+        "status": "initiated",
+    }
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_stop_rds_instance(mock_boto_client):
+    mock_rds = MagicMock()
+
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+
+    service = ResourceService()
+
+    result = service.stop_rds_instance("cloudops-db")
+
+    mock_rds.stop_db_instance.assert_called_once_with(
+        DBInstanceIdentifier="cloudops-db"
+    )
+
+    assert result == {
+        "db_instance_identifier": "cloudops-db",
+        "action": "stop",
+        "status": "initiated",
+    }
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_reboot_rds_instance(mock_boto_client):
+    mock_rds = MagicMock()
+
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+
+    service = ResourceService()
+
+    result = service.reboot_rds_instance("cloudops-db")
+
+    mock_rds.reboot_db_instance.assert_called_once_with(
+        DBInstanceIdentifier="cloudops-db"
+    )
+
+    assert result == {
+        "db_instance_identifier": "cloudops-db",
+        "action": "reboot",
+        "status": "initiated",
+    }
+
+
 @patch("backend.app.api.router.ResourceService")
 def test_start_ec2_instance_api(mock_resource_service):
     mock_service = mock_resource_service.return_value
@@ -308,6 +383,7 @@ def test_reboot_ec2_instance_api(mock_resource_service):
         "i-1234567890abcdef0"
     )
 
+
 @patch("backend.app.api.router.ResourceService")
 def test_start_ec2_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
@@ -374,4 +450,150 @@ def test_reboot_ec2_instance_api_error(mock_resource_service):
 
     mock_service.reboot_ec2_instance.assert_called_once_with(
         "i-1234567890abcdef0"
+    )
+
+@patch("backend.app.api.router.ResourceService")
+def test_start_rds_instance_api(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.start_rds_instance.return_value = {
+        "db_instance_identifier": "cloudops-db",
+        "action": "start",
+        "status": "initiated",
+    }
+
+    response = client.post(
+        "/api/v1/resources/rds/cloudops-db/start"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "db_instance_identifier": "cloudops-db",
+        "action": "start",
+        "status": "initiated",
+    }
+
+    mock_service.start_rds_instance.assert_called_once_with(
+        "cloudops-db"
+    )
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_stop_rds_instance_api(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.stop_rds_instance.return_value = {
+        "db_instance_identifier": "cloudops-db",
+        "action": "stop",
+        "status": "initiated",
+    }
+
+    response = client.post(
+        "/api/v1/resources/rds/cloudops-db/stop"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "db_instance_identifier": "cloudops-db",
+        "action": "stop",
+        "status": "initiated",
+    }
+
+    mock_service.stop_rds_instance.assert_called_once_with(
+        "cloudops-db"
+    )
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_reboot_rds_instance_api(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.reboot_rds_instance.return_value = {
+        "db_instance_identifier": "cloudops-db",
+        "action": "reboot",
+        "status": "initiated",
+    }
+
+    response = client.post(
+        "/api/v1/resources/rds/cloudops-db/reboot"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "db_instance_identifier": "cloudops-db",
+        "action": "reboot",
+        "status": "initiated",
+    }
+
+    mock_service.reboot_rds_instance.assert_called_once_with(
+        "cloudops-db"
+    )
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_start_rds_instance_api_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.start_rds_instance.side_effect = RuntimeError(
+        "Unable to start RDS instance"
+    )
+
+    response = client.post(
+        "/api/v1/resources/rds/cloudops-db/start"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to start RDS instance",
+    }
+
+    mock_service.start_rds_instance.assert_called_once_with(
+        "cloudops-db"
+    )
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_stop_rds_instance_api_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.stop_rds_instance.side_effect = RuntimeError(
+        "Unable to stop RDS instance"
+    )
+
+    response = client.post(
+        "/api/v1/resources/rds/cloudops-db/stop"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to stop RDS instance",
+    }
+
+    mock_service.stop_rds_instance.assert_called_once_with(
+        "cloudops-db"
+    )
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_reboot_rds_instance_api_error(mock_resource_service):
+    mock_service = mock_resource_service.return_value
+
+    mock_service.reboot_rds_instance.side_effect = RuntimeError(
+        "Unable to reboot RDS instance"
+    )
+
+    response = client.post(
+        "/api/v1/resources/rds/cloudops-db/reboot"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to reboot RDS instance",
+    }
+
+    mock_service.reboot_rds_instance.assert_called_once_with(
+        "cloudops-db"
     )
