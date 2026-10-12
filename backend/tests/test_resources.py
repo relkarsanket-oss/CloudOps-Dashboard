@@ -542,7 +542,7 @@ def test_start_rds_instance_api_error(mock_resource_service):
         "/api/v1/resources/rds/cloudops-db/start"
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to start RDS instance",
@@ -565,7 +565,7 @@ def test_stop_rds_instance_api_error(mock_resource_service):
         "/api/v1/resources/rds/cloudops-db/stop"
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to stop RDS instance",
@@ -588,7 +588,7 @@ def test_reboot_rds_instance_api_error(mock_resource_service):
         "/api/v1/resources/rds/cloudops-db/reboot"
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to reboot RDS instance",

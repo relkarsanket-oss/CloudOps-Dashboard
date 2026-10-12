@@ -176,10 +176,13 @@ def start_rds_instance(db_instance_identifier: str):
     try:
         return service.start_rds_instance(db_instance_identifier)
     except RuntimeError as exc:
-        return {
-            "status": "error",
-            "message": str(exc),
-        }
+        return JSONResponse(
+    status_code=500,
+    content={
+        "status": "error",
+        "message": str(exc),
+    },
+)
 
 
 @api_v1_router.post("/resources/rds/{db_instance_identifier}/stop")
@@ -189,10 +192,13 @@ def stop_rds_instance(db_instance_identifier: str):
     try:
         return service.stop_rds_instance(db_instance_identifier)
     except RuntimeError as exc:
-        return {
-            "status": "error",
-            "message": str(exc),
-        }
+        return JSONResponse(
+    status_code=500,
+    content={
+        "status": "error",
+        "message": str(exc),
+    },
+)
 
 
 @api_v1_router.post("/resources/rds/{db_instance_identifier}/reboot")
@@ -202,10 +208,13 @@ def reboot_rds_instance(db_instance_identifier: str):
     try:
         return service.reboot_rds_instance(db_instance_identifier)
     except RuntimeError as exc:
-        return {
-            "status": "error",
-            "message": str(exc),
-        }
+        return JSONResponse(
+    status_code=500,
+    content={
+        "status": "error",
+        "message": str(exc),
+    },
+)
 
 
 router.include_router(api_v1_router)
