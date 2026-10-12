@@ -1,4 +1,6 @@
+
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 
 from backend.app.models.monitoring import MonitoringData, MonitoringError
 from backend.app.models.resources import ResourceError, ResourceResponse
@@ -126,10 +128,13 @@ def start_ec2_instance(instance_id: str):
     try:
         return service.start_ec2_instance(instance_id)
     except RuntimeError as exc:
-        return {
-            "status": "error",
-            "message": str(exc),
-        }
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": str(exc),
+            },
+        )
 
 
 @api_v1_router.post("/resources/ec2/{instance_id}/stop")
@@ -139,10 +144,13 @@ def stop_ec2_instance(instance_id: str):
     try:
         return service.stop_ec2_instance(instance_id)
     except RuntimeError as exc:
-        return {
-            "status": "error",
-            "message": str(exc),
-        }
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": str(exc),
+            },
+        )
 
 
 @api_v1_router.post("/resources/ec2/{instance_id}/reboot")
@@ -152,10 +160,13 @@ def reboot_ec2_instance(instance_id: str):
     try:
         return service.reboot_ec2_instance(instance_id)
     except RuntimeError as exc:
-        return {
-            "status": "error",
-            "message": str(exc),
-        }
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": str(exc),
+            },
+        )
 
 
 @api_v1_router.post("/resources/rds/{db_instance_identifier}/start")

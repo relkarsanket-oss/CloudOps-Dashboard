@@ -396,7 +396,7 @@ def test_start_ec2_instance_api_error(mock_resource_service):
         "/api/v1/resources/ec2/i-1234567890abcdef0/start"
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to start EC2 instance",
@@ -419,7 +419,7 @@ def test_stop_ec2_instance_api_error(mock_resource_service):
         "/api/v1/resources/ec2/i-1234567890abcdef0/stop"
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to stop EC2 instance",
@@ -442,7 +442,7 @@ def test_reboot_ec2_instance_api_error(mock_resource_service):
         "/api/v1/resources/ec2/i-1234567890abcdef0/reboot"
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to reboot EC2 instance",
