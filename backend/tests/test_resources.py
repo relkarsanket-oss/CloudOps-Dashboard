@@ -687,3 +687,93 @@ def test_reboot_rds_instance_error(mock_boto_client):
         assert False, "Expected RuntimeError"
     except RuntimeError as exc:
         assert str(exc) == "Unable to reboot RDS instance"
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_start_ec2_instance_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_ec2 = MagicMock()
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+
+    mock_ec2.start_instances.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidInstanceID.NotFound",
+                "Message": "EC2 instance was not found",
+            }
+        },
+        "StartInstances",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.start_ec2_instance("i-1234567890abcdef0")
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to start EC2 instance"
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_stop_ec2_instance_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_ec2 = MagicMock()
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+
+    mock_ec2.stop_instances.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidInstanceID.NotFound",
+                "Message": "EC2 instance was not found",
+            }
+        },
+        "StopInstances",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.stop_ec2_instance("i-1234567890abcdef0")
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to stop EC2 instance"
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_reboot_ec2_instance_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_ec2 = MagicMock()
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+
+    mock_ec2.reboot_instances.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidInstanceID.NotFound",
+                "Message": "EC2 instance was not found",
+            }
+        },
+        "RebootInstances",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.reboot_ec2_instance("i-1234567890abcdef0")
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to reboot EC2 instance"
