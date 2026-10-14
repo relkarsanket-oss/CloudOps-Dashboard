@@ -147,10 +147,9 @@ def test_ec2_resources_error(mock_resource_service):
 
     response = client.get("/api/v1/resources/ec2")
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
-        "status": "error",
-        "message": "Unable to retrieve EC2 resources",
+        "detail": "Unable to retrieve EC2 resources",
     }
 
     mock_service.get_ec2_instances.assert_called_once()

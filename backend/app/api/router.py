@@ -1,5 +1,4 @@
-
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
 from backend.app.models.monitoring import MonitoringData, MonitoringError
@@ -72,10 +71,10 @@ def ec2_resources():
             "resources": service.get_ec2_instances()
         }
     except RuntimeError:
-        return {
-            "status": "error",
-            "message": "Unable to retrieve EC2 resources",
-        }
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to retrieve EC2 resources",
+        )
 
 
 @api_v1_router.get(
