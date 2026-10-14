@@ -106,6 +106,7 @@ def rds_resources():
     summary="List S3 buckets",
     description="Retrieve S3 buckets available to the AWS account.",
 )
+
 def get_s3_resources():
     """Retrieve S3 buckets available to the AWS account."""
     service = ResourceService()
@@ -115,11 +116,13 @@ def get_s3_resources():
             "resources": service.get_s3_buckets()
         }
     except RuntimeError:
-        return {
-            "status": "error",
-            "message": "Unable to retrieve S3 resources",
-        }
-
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": "Unable to retrieve S3 resources",
+            },
+        )
 
 @api_v1_router.post("/resources/ec2/{instance_id}/start")
 def start_ec2_instance(instance_id: str):

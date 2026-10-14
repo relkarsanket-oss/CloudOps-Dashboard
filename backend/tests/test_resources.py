@@ -109,7 +109,7 @@ def test_s3_resources_error(mock_resource_service):
 
     response = client.get("/api/v1/resources/s3")
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to retrieve S3 resources",
