@@ -776,3 +776,92 @@ def test_reboot_ec2_instance_error(mock_boto_client):
         assert False, "Expected RuntimeError"
     except RuntimeError as exc:
         assert str(exc) == "Unable to reboot EC2 instance"
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_get_ec2_instances_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_ec2 = MagicMock()
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+    mock_ec2.describe_instances.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "UnauthorizedOperation",
+                "Message": "Not authorized",
+            }
+        },
+        "DescribeInstances",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.get_ec2_instances()
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to retrieve EC2 resources"
+        assert isinstance(exc.__cause__, ClientError)
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_get_rds_instances_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_rds = MagicMock()
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+    mock_rds.describe_db_instances.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "AccessDenied",
+                "Message": "Not authorized",
+            }
+        },
+        "DescribeDBInstances",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.get_rds_instances()
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to retrieve RDS resources"
+        assert isinstance(exc.__cause__, ClientError)
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_get_s3_buckets_error(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_s3 = MagicMock()
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        MagicMock(),
+        mock_s3,
+    ]
+    mock_s3.list_buckets.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "AccessDenied",
+                "Message": "Not authorized",
+            }
+        },
+        "ListBuckets",
+    )
+
+    service = ResourceService()
+
+    try:
+        service.get_s3_buckets()
+        assert False, "Expected RuntimeError"
+    except RuntimeError as exc:
+        assert str(exc) == "Unable to retrieve S3 resources"
+        assert isinstance(exc.__cause__, ClientError)
