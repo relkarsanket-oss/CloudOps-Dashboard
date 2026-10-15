@@ -92,10 +92,13 @@ def rds_resources():
             "resources": service.get_rds_instances()
         }
     except RuntimeError:
-        return {
-            "status": "error",
-            "message": "Unable to retrieve RDS resources",
-        }
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": "Unable to retrieve RDS resources",
+            },
+        )
 
 
 @api_v1_router.get(

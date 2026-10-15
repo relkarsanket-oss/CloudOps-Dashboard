@@ -128,7 +128,7 @@ def test_rds_resources_error(mock_resource_service):
 
     response = client.get("/api/v1/resources/rds")
 
-    assert response.status_code == 200
+    assert response.status_code == 500
     assert response.json() == {
         "status": "error",
         "message": "Unable to retrieve RDS resources",
