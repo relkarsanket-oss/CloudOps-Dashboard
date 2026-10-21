@@ -388,8 +388,8 @@ def test_start_ec2_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.start_ec2_instance.side_effect = RuntimeError(
-        "Unable to start EC2 instance"
-    )
+    "AWS_ACCESS_KEY_ID=SHOULD_NOT_LEAK internal AWS failure"
+)
 
     response = client.post(
         "/api/v1/resources/ec2/i-1234567890abcdef0/start"
@@ -411,7 +411,7 @@ def test_stop_ec2_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.stop_ec2_instance.side_effect = RuntimeError(
-        "Unable to stop EC2 instance"
+        "AWS_SECRET_ACCESS_KEY=SHOULD_NOT_LEAK internal AWS failure"
     )
 
     response = client.post(
@@ -434,7 +434,7 @@ def test_reboot_ec2_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.reboot_ec2_instance.side_effect = RuntimeError(
-        "Unable to reboot EC2 instance"
+        "Internal EC2 failure: sensitive AWS details"
     )
 
     response = client.post(
@@ -534,8 +534,8 @@ def test_start_rds_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.start_rds_instance.side_effect = RuntimeError(
-        "Unable to start RDS instance"
-    )
+    "AWS_ACCESS_KEY_ID=SHOULD_NOT_LEAK internal RDS failure"
+)
 
     response = client.post(
         "/api/v1/resources/rds/cloudops-db/start"
@@ -557,7 +557,7 @@ def test_stop_rds_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.stop_rds_instance.side_effect = RuntimeError(
-        "Unable to stop RDS instance"
+        "AWS_SECRET_ACCESS_KEY=SHOULD_NOT_LEAK internal RDS failure"
     )
 
     response = client.post(
@@ -580,7 +580,7 @@ def test_reboot_rds_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.reboot_rds_instance.side_effect = RuntimeError(
-        "Unable to reboot RDS instance"
+        "Internal RDS failure: sensitive AWS details"
     )
 
     response = client.post(

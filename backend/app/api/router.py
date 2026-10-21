@@ -132,12 +132,12 @@ def start_ec2_instance(instance_id: str):
 
     try:
         return service.start_ec2_instance(instance_id)
-    except RuntimeError as exc:
+    except RuntimeError:
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(exc),
+                "message": "Unable to start EC2 instance",
             },
         )
 
@@ -148,12 +148,12 @@ def stop_ec2_instance(instance_id: str):
 
     try:
         return service.stop_ec2_instance(instance_id)
-    except RuntimeError as exc:
+    except RuntimeError:
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(exc),
+                "message": "Unable to stop EC2 instance",
             },
         )
 
@@ -164,12 +164,12 @@ def reboot_ec2_instance(instance_id: str):
 
     try:
         return service.reboot_ec2_instance(instance_id)
-    except RuntimeError as exc:
+    except RuntimeError:
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(exc),
+                "message": "Unable to reboot EC2 instance",
             },
         )
 
@@ -180,12 +180,12 @@ def start_rds_instance(db_instance_identifier: str):
 
     try:
         return service.start_rds_instance(db_instance_identifier)
-    except RuntimeError as exc:
+    except RuntimeError:
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(exc),
+                "message": "Unable to start RDS instance",
             },
         )
 
@@ -196,12 +196,12 @@ def stop_rds_instance(db_instance_identifier: str):
 
     try:
         return service.stop_rds_instance(db_instance_identifier)
-    except RuntimeError as exc:
+    except RuntimeError:
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(exc),
+                "message": "Unable to stop RDS instance",
             },
         )
 
@@ -212,12 +212,12 @@ def reboot_rds_instance(db_instance_identifier: str):
 
     try:
         return service.reboot_rds_instance(db_instance_identifier)
-    except RuntimeError as exc:
+    except RuntimeError:
         return JSONResponse(
             status_code=500,
             content={
                 "status": "error",
-                "message": str(exc),
+                "message": "Unable to reboot RDS instance",
             },
         )
 
