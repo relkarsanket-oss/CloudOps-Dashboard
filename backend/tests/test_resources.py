@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, patch
 
+from botocore.exceptions import NoRegionError
 from fastapi.testclient import TestClient
 
 from backend.app.main import app
@@ -388,8 +389,8 @@ def test_start_ec2_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.start_ec2_instance.side_effect = RuntimeError(
-    "AWS_ACCESS_KEY_ID=SHOULD_NOT_LEAK internal AWS failure"
-)
+        "AWS_ACCESS_KEY_ID=SHOULD_NOT_LEAK internal AWS failure"
+    )
 
     response = client.post(
         "/api/v1/resources/ec2/i-1234567890abcdef0/start"
@@ -450,6 +451,7 @@ def test_reboot_ec2_instance_api_error(mock_resource_service):
     mock_service.reboot_ec2_instance.assert_called_once_with(
         "i-1234567890abcdef0"
     )
+
 
 @patch("backend.app.api.router.ResourceService")
 def test_start_rds_instance_api(mock_resource_service):
@@ -534,8 +536,8 @@ def test_start_rds_instance_api_error(mock_resource_service):
     mock_service = mock_resource_service.return_value
 
     mock_service.start_rds_instance.side_effect = RuntimeError(
-    "AWS_ACCESS_KEY_ID=SHOULD_NOT_LEAK internal RDS failure"
-)
+        "AWS_ACCESS_KEY_ID=SHOULD_NOT_LEAK internal RDS failure"
+    )
 
     response = client.post(
         "/api/v1/resources/rds/cloudops-db/start"
@@ -777,6 +779,7 @@ def test_reboot_ec2_instance_error(mock_boto_client):
     except RuntimeError as exc:
         assert str(exc) == "Unable to reboot EC2 instance"
 
+
 @patch("backend.app.services.resource_service.boto3.client")
 def test_get_ec2_instances_error(mock_boto_client):
     from botocore.exceptions import ClientError
@@ -865,3 +868,41 @@ def test_get_s3_buckets_error(mock_boto_client):
     except RuntimeError as exc:
         assert str(exc) == "Unable to retrieve S3 resources"
         assert isinstance(exc.__cause__, ClientError)
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_ec2_resources_initialization_error(mock_resource_service):
+    mock_resource_service.side_effect = NoRegionError()
+
+    response = client.get("/api/v1/resources/ec2")
+
+    assert response.status_code == 500
+    assert response.json() == {
+        "detail": "Unable to retrieve EC2 resources",
+    }
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_rds_resources_initialization_error(mock_resource_service):
+    mock_resource_service.side_effect = NoRegionError()
+
+    response = client.get("/api/v1/resources/rds")
+
+    assert response.status_code == 500
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to retrieve RDS resources",
+    }
+
+
+@patch("backend.app.api.router.ResourceService")
+def test_s3_resources_initialization_error(mock_resource_service):
+    mock_resource_service.side_effect = NoRegionError()
+
+    response = client.get("/api/v1/resources/s3")
+
+    assert response.status_code == 500
+    assert response.json() == {
+        "status": "error",
+        "message": "Unable to retrieve S3 resources",
+    }

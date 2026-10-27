@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
+from botocore.exceptions import BotoCoreError
 
 from backend.app.models.monitoring import MonitoringData, MonitoringError
 from backend.app.models.resources import ResourceError, ResourceResponse
@@ -64,13 +65,12 @@ def monitoring():
     description="Retrieve EC2 instances from the configured AWS region.",
 )
 def ec2_resources():
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return {
             "resources": service.get_ec2_instances()
         }
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         raise HTTPException(
             status_code=500,
             detail="Unable to retrieve EC2 resources",
@@ -85,13 +85,12 @@ def ec2_resources():
     description="Retrieve RDS database instances from the configured AWS region.",
 )
 def rds_resources():
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return {
             "resources": service.get_rds_instances()
         }
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
@@ -108,16 +107,14 @@ def rds_resources():
     summary="List S3 buckets",
     description="Retrieve S3 buckets available to the AWS account.",
 )
-
 def get_s3_resources():
     """Retrieve S3 buckets available to the AWS account."""
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return {
             "resources": service.get_s3_buckets()
         }
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
@@ -127,12 +124,12 @@ def get_s3_resources():
         )
 
 @api_v1_router.post("/resources/ec2/{instance_id}/start")
-def start_ec2_instance(instance_id: str):
-    service = ResourceService()
 
+def start_ec2_instance(instance_id: str):
     try:
+        service = ResourceService()
         return service.start_ec2_instance(instance_id)
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
@@ -144,11 +141,10 @@ def start_ec2_instance(instance_id: str):
 
 @api_v1_router.post("/resources/ec2/{instance_id}/stop")
 def stop_ec2_instance(instance_id: str):
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return service.stop_ec2_instance(instance_id)
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
@@ -160,11 +156,10 @@ def stop_ec2_instance(instance_id: str):
 
 @api_v1_router.post("/resources/ec2/{instance_id}/reboot")
 def reboot_ec2_instance(instance_id: str):
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return service.reboot_ec2_instance(instance_id)
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
@@ -176,11 +171,10 @@ def reboot_ec2_instance(instance_id: str):
 
 @api_v1_router.post("/resources/rds/{db_instance_identifier}/start")
 def start_rds_instance(db_instance_identifier: str):
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return service.start_rds_instance(db_instance_identifier)
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
@@ -192,11 +186,10 @@ def start_rds_instance(db_instance_identifier: str):
 
 @api_v1_router.post("/resources/rds/{db_instance_identifier}/stop")
 def stop_rds_instance(db_instance_identifier: str):
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return service.stop_rds_instance(db_instance_identifier)
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
@@ -208,11 +201,10 @@ def stop_rds_instance(db_instance_identifier: str):
 
 @api_v1_router.post("/resources/rds/{db_instance_identifier}/reboot")
 def reboot_rds_instance(db_instance_identifier: str):
-    service = ResourceService()
-
     try:
+        service = ResourceService()
         return service.reboot_rds_instance(db_instance_identifier)
-    except RuntimeError:
+    except (RuntimeError, BotoCoreError):
         return JSONResponse(
             status_code=500,
             content={
