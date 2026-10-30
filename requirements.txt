@@ -1,1 +1,7 @@
-# CloudOps Dashboard dependencies will be added phase-by-phase.
+# Runtime dependencies
+fastapi==0.141.1
+uvicorn==0.52.4
+boto3==1.43.90
+
+# Development and testing
+pytest==9.1.1
