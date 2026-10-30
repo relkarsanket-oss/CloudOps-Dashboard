@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 from botocore.exceptions import NoRegionError
 from fastapi.testclient import TestClient
@@ -6,9 +6,25 @@ from fastapi.testclient import TestClient
 from backend.app.main import app
 from backend.app.services.resource_service import ResourceService
 
+from backend.aws.config import AWS_REGION
 
 client = TestClient(app)
 
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_resource_service_initializes_aws_clients(mock_boto_client):
+    service = ResourceService()
+
+    assert service.ec2 == mock_boto_client.return_value
+    assert service.rds == mock_boto_client.return_value
+    assert service.s3 == mock_boto_client.return_value
+
+    assert mock_boto_client.call_count == 3
+    assert mock_boto_client.call_args_list == [
+        call("ec2", region_name=AWS_REGION),
+        call("rds", region_name=AWS_REGION),
+        call("s3", region_name=AWS_REGION),
+    ]
 
 @patch("backend.app.api.router.ResourceService")
 def test_ec2_resources(mock_resource_service):
