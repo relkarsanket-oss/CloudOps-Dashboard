@@ -44,6 +44,25 @@ def test_resource_service_stops_initializing_clients_when_rds_fails(
         call("rds", region_name=AWS_REGION),
     ]
 
+@patch("backend.app.services.resource_service.boto3.client")
+def test_resource_service_stops_initializing_clients_when_s3_fails(
+    mock_boto_client,
+):
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        MagicMock(),
+        NoRegionError(),
+    ]
+
+    with pytest.raises(NoRegionError):
+        ResourceService()
+
+    assert mock_boto_client.call_count == 3
+    assert mock_boto_client.call_args_list == [
+        call("ec2", region_name=AWS_REGION),
+        call("rds", region_name=AWS_REGION),
+        call("s3", region_name=AWS_REGION),
+    ]
 
 @patch("backend.app.api.router.ResourceService")
 def test_ec2_resources(mock_resource_service):
