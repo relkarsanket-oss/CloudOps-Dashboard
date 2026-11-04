@@ -44,6 +44,7 @@ def test_resource_service_stops_initializing_clients_when_rds_fails(
         call("rds", region_name=AWS_REGION),
     ]
 
+
 @patch("backend.app.services.resource_service.boto3.client")
 def test_resource_service_stops_initializing_clients_when_s3_fails(
     mock_boto_client,
@@ -63,6 +64,7 @@ def test_resource_service_stops_initializing_clients_when_s3_fails(
         call("rds", region_name=AWS_REGION),
         call("s3", region_name=AWS_REGION),
     ]
+
 
 @patch("backend.app.api.router.ResourceService")
 def test_ec2_resources(mock_resource_service):
@@ -922,6 +924,103 @@ def test_get_s3_buckets_error(mock_boto_client):
     except RuntimeError as exc:
         assert str(exc) == "Unable to retrieve S3 resources"
         assert isinstance(exc.__cause__, ClientError)
+
+
+# ==========================================================
+# NEW TESTS: Invalid AWS credentials (InvalidClientTokenId)
+# ==========================================================
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_get_ec2_instances_invalid_credentials(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_ec2 = MagicMock()
+    mock_boto_client.side_effect = [
+        mock_ec2,
+        MagicMock(),
+        MagicMock(),
+    ]
+
+    mock_ec2.describe_instances.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidClientTokenId",
+                "Message": "The security token included in the request is invalid",
+            }
+        },
+        "DescribeInstances",
+    )
+
+    service = ResourceService()
+
+    with pytest.raises(RuntimeError) as exc:
+        service.get_ec2_instances()
+
+    assert str(exc.value) == "Unable to retrieve EC2 resources"
+    assert isinstance(exc.value.__cause__, ClientError)
+    assert "InvalidClientTokenId" not in str(exc.value)
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_get_rds_instances_invalid_credentials(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_rds = MagicMock()
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        mock_rds,
+        MagicMock(),
+    ]
+
+    mock_rds.describe_db_instances.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidClientTokenId",
+                "Message": "The security token included in the request is invalid",
+            }
+        },
+        "DescribeDBInstances",
+    )
+
+    service = ResourceService()
+
+    with pytest.raises(RuntimeError) as exc:
+        service.get_rds_instances()
+
+    assert str(exc.value) == "Unable to retrieve RDS resources"
+    assert isinstance(exc.value.__cause__, ClientError)
+    assert "InvalidClientTokenId" not in str(exc.value)
+
+
+@patch("backend.app.services.resource_service.boto3.client")
+def test_get_s3_buckets_invalid_credentials(mock_boto_client):
+    from botocore.exceptions import ClientError
+
+    mock_s3 = MagicMock()
+    mock_boto_client.side_effect = [
+        MagicMock(),
+        MagicMock(),
+        mock_s3,
+    ]
+
+    mock_s3.list_buckets.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "InvalidClientTokenId",
+                "Message": "The security token included in the request is invalid",
+            }
+        },
+        "ListBuckets",
+    )
+
+    service = ResourceService()
+
+    with pytest.raises(RuntimeError) as exc:
+        service.get_s3_buckets()
+
+    assert str(exc.value) == "Unable to retrieve S3 resources"
+    assert isinstance(exc.value.__cause__, ClientError)
+    assert "InvalidClientTokenId" not in str(exc.value)
 
 
 @patch("backend.app.api.router.ResourceService")
